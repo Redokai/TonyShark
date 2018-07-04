@@ -32,7 +32,7 @@ namespace Microsoft.Bot.Sample.LuisBot
         {
             await this.ShowLuisResult(context, result);
         }
-        
+
         [LuisIntent("Service")]
         public async Task ServiceIntent(IDialogContext context, LuisResult result)
         {
