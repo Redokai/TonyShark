@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
-
+using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
@@ -30,15 +30,28 @@ namespace Microsoft.Bot.Sample.LuisBot
         [LuisIntent("Greeting")]
         public async Task GreetingIntent(IDialogContext context, LuisResult result)
         {
-            await this.ShowLuisResult(context, result);
+            //await this.ShowLuisResult(context, result);
+            string[] greetings = new string[] { $"How may I help you?" , $"Hello, how may I be of service?" , $"Hi, how can I help?" };
+            Random rnd = new Random();
+            await context.PostAsync(greetings.GetValue(rnd.Next(0,greetings.Length-1)).ToString());
         }
 
         [LuisIntent("Service")]
         public async Task ServiceIntent(IDialogContext context, LuisResult result)
         {
-            await this.ShowLuisResult(context, result);
-            await context.PostAsync($"Would you like assistance on a service?");
+            //await this.ShowLuisResult(context, result);
+            await context.PostAsync($"Which service do you need? Documents? Reports? Transmittals?");
+            luis
         }
+
+        [LuisIntent("Service.Document")]
+        public async Task DocumentServiceIntent(IDialogContext context, LuisResult result)
+        {
+            //await this.ShowLuisResult(context, result);
+            await context.PostAsync($"What is the documents name?");
+        }
+
+
 
         [LuisIntent("Cancel")]
         public async Task CancelIntent(IDialogContext context, LuisResult result)
