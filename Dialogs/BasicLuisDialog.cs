@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Sample.LuisBot
 {
@@ -12,6 +13,7 @@ namespace Microsoft.Bot.Sample.LuisBot
     [Serializable]
     public class BasicLuisDialog : LuisDialog<object>
     {
+        public string CurrentIntent = "";
         public BasicLuisDialog() : base(new LuisService(new LuisModelAttribute(
             ConfigurationManager.AppSettings["LuisAppId"], 
             ConfigurationManager.AppSettings["LuisAPIKey"], 
@@ -30,7 +32,7 @@ namespace Microsoft.Bot.Sample.LuisBot
         [LuisIntent("Greeting")]
         public async Task GreetingIntent(IDialogContext context, LuisResult result)
         {
-            //await this.ShowLuisResult(context, result);
+            await this.ShowLuisResult(context, result);
             string[] greetings = new string[] { $"How may I help you?" , $"Hello, how may I be of service?" , $"Hi, how can I help?" };
             Random rnd = new Random();
             await context.PostAsync(greetings.GetValue(rnd.Next(0,greetings.Length-1)).ToString());
@@ -40,23 +42,22 @@ namespace Microsoft.Bot.Sample.LuisBot
         public async Task ServiceIntent(IDialogContext context, LuisResult result)
         {
             //await this.ShowLuisResult(context, result);
+            CurrentIntent = "Service";
             await context.PostAsync($"Which service do you need? Documents? Reports? Transmittals?");
-            luis
+            context.ConversationData.SetValue("Intent", "Service");
         }
 
         [LuisIntent("Service.Document")]
         public async Task DocumentServiceIntent(IDialogContext context, LuisResult result)
         {
-            //await this.ShowLuisResult(context, result);
-            await context.PostAsync($"What is the documents name?");
+            await this.ShowLuisResult(context, result);            
         }
-
-
 
         [LuisIntent("Cancel")]
         public async Task CancelIntent(IDialogContext context, LuisResult result)
         {
             await this.ShowLuisResult(context, result);
+            context.ConversationData.SetValue("Intent", "");
         }
 
         [LuisIntent("Help")]
