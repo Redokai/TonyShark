@@ -13,7 +13,6 @@ namespace Microsoft.Bot.Sample.LuisBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        
         /// <summary>
         /// POST: api/Messages
         /// receive a message from a user and send replies
@@ -23,7 +22,6 @@ namespace Microsoft.Bot.Sample.LuisBot
         public virtual async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
             // check if activity is of type message
-            
             if (activity.GetActivityType() == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new BasicLuisDialog());
